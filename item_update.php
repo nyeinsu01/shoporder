@@ -2,7 +2,7 @@
 	
 	require 'connection.php';
 
-
+	$ID = $_POST['id'];
 	$codeno = $_POST['name1'];
 	$photo = $_FILES['photo'];
 	$item_name = $_POST['name2'];
@@ -11,12 +11,13 @@
 	$description = $_POST['address'];
 	$brand_id = $_POST['brand_id'];
 	$subcategory_id=$_POST['subcategory_id'];
-	
+	$oldlogo1=$_POST['oldlogo1'];
 
 	$source_dir = 'image/item/';
 
 	
-
+	if (isset($photo) && $photo['size']>0) {
+	
 	$filename =  mt_rand(100000,999999);
 	$file_array = explode('.',$photo['name']);
 	$file_exe = $file_array[1];
@@ -24,10 +25,16 @@
 	$filepath = $source_dir.$filename.'.'.$file_exe;
 	move_uploaded_file($photo['tmp_name'], $filepath);
 
-	var_dump($photo);
+	unlink($oldlogo1);
+	}else{
+		$filepath = $oldlogo1;
+	}
+	
 	
 
-	$sql = "INSERT INTO items (codeno,item_name,photo,price,discount,description,brand_id,subcategory_id) VALUES (:codeno,:item_name,:photo,:price,:discount,:description,:brand_id,:subcategory_id)";
+	$sql = "UPDATE items SET codeno=:codeno, item_name=:item_name, photo=:photo, price=:price, discount=:discount, description=:description, brand_id=:brand_id, subcategory_id=:subcategory_id WHERE id=:id";
+
+
 	$statement = $pdo->prepare($sql);
 	$statement->bindParam(':codeno',$codeno);
 	$statement->bindParam(':item_name',$item_name);
@@ -37,23 +44,14 @@
 	$statement->bindParam(':description',$description);
 	$statement->bindParam(':brand_id',$brand_id);
 	$statement->bindParam(':subcategory_id',$subcategory_id);
+	$statement->bindParam(':id',$ID);
 	
-		try{
-		$statement->execute([
-			':codeno' => $codeno,
-			':item_name' => $item_name,
-			':photo' => $filepath,
-			':price' =>$price,
-			':discount' => $discount,
-			':description' => $description,
-			':brand_id' => $brand_id,
-			':subcategory_id' => $subcategory_id
-		]);
-		header("location:item.php");
-		}
-		catch(Exception $e){
-			throw $e;
-		}
+		
+	$statement->execute();
+		
+		
+		header('location:item.php');	
+	
 
 
 

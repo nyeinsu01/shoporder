@@ -12,6 +12,7 @@
     $statement->execute();
 
     $category = $statement->fetch(PDO::FETCH_ASSOC);
+    
 
 ?>
 	 <div class="app-title">

@@ -1,6 +1,7 @@
 <?php
 	
     require 'connection.php';
+    session_start();
 
 
     $sql = "SELECT * FROM categories ORDER BY Name ASC";
@@ -94,7 +95,32 @@
 						</div>
 					</div>
 					<div class="col-lg-4 col-10">
-						<a href="" class="d-xl-block d-lg-block d-md-block d-none  text-decoration-none loginLink float-right"> Login | Sign-up </a>
+
+
+						<?php if (!isset($_SESSION['login_user'])) {
+							
+						?>
+						<a href="login.php" class="d-xl-block d-lg-block d-md-block d-none  text-decoration-none loginLink float-right"> Login | Sign-up </a>
+						<?php } else { ?>
+						<a href="javascript:void(0)" class="d-xl-block d-lg-block d-md-block d-none  text-decoration-none loginLink float-right" data-toggle="dropdown" role="button">
+						<?= $_SESSION['login_user']['Name']; ?>
+						<i class="iconfont-rounded-down"></i></a>
+
+						<div class="dropdown-menu" arial-labelledby="dropdownMenuButton">
+							<a class="dropdown-item" href="">Profile</a>
+							<div class="dropdown-divider"></div>
+
+							<a class="dropdown-item" href="">Order History</a>
+							<div class="dropdown-divider"></div>
+
+							<a class="dropdown-item" href="">Change Password</a>
+							<div class="dropdown-divider"></div>
+
+							<a class="dropdown-item" href="signout.php">Logout</a>
+							
+						</div>
+
+						<?php } ?>
 
 						
 					</div>
@@ -109,20 +135,20 @@
 					<i class="icofont-search"></i>
 				</div>
 
-				<a href="" class="text-decoration-none d-xl-inline d-lg-inline d-md-inline d-sm-none d-none shoppingcartLink"> 
+				<a href="cart1.php" class="text-decoration-none d-xl-inline d-lg-inline d-md-inline d-sm-none d-none shoppingcartLink"> 
 					<i class="icofont-shopping-cart"></i> 
-					<span class="badge badge-pill badge-light badge-notify cartNotistyle cartNoti"> 1 </span>
-					<span> 4,800 Ks </span>
+					<span class="badge badge-pill badge-light badge-notify cartNotistyle count "></span>
+					<span class="cartTotal"> </span>
 				</a>
 
 				<a href="" class="text-decoration-none d-xl-none d-lg-none d-md-none d-sm-inline-block d-inline-block shoppingcartLink"> 
 					<i class="icofont-shopping-cart"></i>
-					<span class="badge badge-pill badge-light badge-notify cartNotistyle cartNoti"> 1 </span>
+					<span class="badge badge-pill badge-light badge-notify cartNotistyle cartNoti">  </span>
 				</a>
 
 				<!-- App Download -->
 
-				<img src="image/download.png" class="img-fluid d-xl-inline d-lg-inline d-md-none d-sm-none d-none" style="width: 150px">
+				<img src="frontend/image/download.png" class="img-fluid d-xl-inline d-lg-inline d-md-none d-sm-none d-none" style="width: 150px">
 			</div>
 		</div>
 	</div>
@@ -168,11 +194,11 @@
 
 			          			foreach ($subcategories as $subcategory) {
 			          				$sID = $subcategory['ID'];
-			          				$sName = $subcategory['Subcategory_name'];
+			          				$sName = $subcategory['subcategory_name'];
 			          			
 			          		?>
 
-			          		<li><a class="dropdown-item" href="#">
+			          		<li><a class="dropdown-item" href="subcategory1.php">
 			          			<?= $sName; ?>
 			          		</a></li>
 			          		<?php } ?>
@@ -207,7 +233,8 @@
 			        		
 			        	?>
 
-            			<a class="dropdown-item" href="#"><?= $bName; ?></a>
+            			<a class="dropdown-item" href="brand1.php?id=<?= $bID ?>"><?= $bName; ?></a>
+            			<input type="hidden" name="brand_id" value="<?= $bID ?>">
             			<div class="dropdown-divider"></div>
             		<?php } ?>
             			
@@ -293,7 +320,7 @@
 
 			          			foreach ($subcategories as $subcategory) {
 			          				$sID = $subcategory['ID'];
-			          				$sName = $subcategory['Subcategory_name'];
+			          				$sName = $subcategory['subcategory_name'];
 			          			
 			          		?>
 

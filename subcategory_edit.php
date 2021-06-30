@@ -6,7 +6,7 @@
             require 'connection.php';
             require 'backendheader.php';
             
-            $query="SELECT * from subcategories where ID=:ID";
+            $query="SELECT * from subcategories where ID=:ID ";
             
             $statement=$pdo->prepare($query);
             
@@ -42,7 +42,7 @@
                         <div class="tile-body">
                             <form action="subcategory_update.php" method="POST" >
                                 <input type="hidden" name="ID" value="<?= $ID?>">
-                                <input type="hidden" name="oldname" value="<?=$category['Subcategory_name'] ?>">
+                                <input type="hidden" name="oldname" value="<?=$category['subcategory_name'] ?>">
                                 <div class="form-group row">
                                     <label for="name_id" class="col-sm-2 col-form-label"> Name </label>
                                     <div class="col-sm-10">
@@ -59,7 +59,7 @@
 
                                 <optgroup label="Choose Subcategory">
                                 <?php
-                                require 'subcategory_list.php';
+                                require 'category_list.php';
                                 ?> </optgroup>
                                 </select>
                             </div>

@@ -19,6 +19,21 @@
 	$statement->execute();
 
 	$saleitems = $statement->fetchAll();
+
+	$sql = "SELECT * FROM brands ORDER BY Name ASC";
+    $statement = $pdo->prepare($sql);
+    $statement->execute();
+
+    $brands = $statement->fetchAll();
+
+    $randomsubcategory_id=6;
+    $sql = 'SELECT * FROM items Where subcategory_id = :value1 LIMIT 8';
+    $statement = $pdo->prepare($sql);
+    $statement->bindParam(':value1', $randomsubcategory_id);
+    $statement->execute();
+
+    $randomitems = $statement->fetchAll();
+
 ?>
 <!-- Carousel -->
 	<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -30,13 +45,13 @@
   		
   		<div class="carousel-inner">
     		<div class="carousel-item active">
-		      	<img src="frontend/image/banner/ac.jpg" class="d-block w-100 bannerImg" alt="...">
+		      	<img src="backend/images/online.jfif" class="d-block w-100 bannerImg" alt="...">
 		    </div>
 		    <div class="carousel-item">
-		      	<img src="frontend/image/banner/giordano.jpg" class="d-block w-100 bannerImg" alt="...">
+		      	<img src="backend/images/onlineshopping.jpg" class="d-block w-100 bannerImg" alt="...">
 		    </div>
 		    <div class="carousel-item">
-		      	<img src="frontend/image/banner/garnier.jpg" class="d-block w-100 bannerImg" alt="...">
+		      	<img src="backend/images/online.jpg" class="d-block w-100 bannerImg" alt="...">
 		    </div>
   		</div>
 	</div>
@@ -75,9 +90,12 @@
 			<div class="col-12">
 				<div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
 		            <div class="MultiCarousel-inner">
+		            	
+		            
+
 		            	<?php
 		            	foreach ($discountitems as $discountitem) {
-		            	 	$di_id = $discountitem['ID'];
+		            	 	$di_id = $discountitem['id'];
 		            	 	$di_name = $discountitem['item_name'];
 
 		            	 	$di_price = $discountitem['price'];
@@ -86,16 +104,21 @@
 		            	 	$di_photo = $discountitem['photo'];
 
 		            	 	$di_codeno = $discountitem['codeno'];
+
 		            	 
 		            	?>
 		                <div class="item">
 		                    <div class="pad15">
-		                    	<img src="<?= $di_photo ?>" class="img-fluid">
+		                    <a href="detail.php?id=<?= $di_id ?>" style="color:black; text-decoration:none;" >
+		                    	<input type="hidden" name="discount_id" value="<?= $di_id ?>">
+		                    	<img src="<?= $di_photo ?>" class="img-fluid" width="200" height="70">
 		                        <p class="text-truncate"><?= $di_name ?></p>
 		                        <p class="item-price">
-		                        	<strike><?= $di_name ?></strike> 
+		                        	<strike><?= $di_price ?></strike> 
 		                        	<span class="d-block"><?= $di_discount ?>Ks</span>
 		                        </p>
+		                    </a>
+		            
 
 		                        <div class="star-rating">
 									<ul class="list-inline">
@@ -107,11 +130,14 @@
 									</ul>
 								</div>
 
-								<a href="#" class="addtocartBtn text-decoration-none" data-id="<?= $di_id ?>" data-name="<?= $di_name ?>" data-price="<?= $di_price ?>" data-discount="<?= $di_discount ?>" data-photo="<?= $di_photo ?>" data-code="<?= $di_codeno ?>">Add to Cart</a>
 
+								<a href="cart1.php">
+								<button  class="addtocart btn btn-outline-danger" data-id="<?= $di_id ?>" data-name="<?= $di_name ?>" data-price="<?= $di_price ?>" data-discount="<?= $di_discount ?>" data-photo="<?= $di_photo ?>" data-code="<?= $di_codeno ?>">Add to Cart</button>
+								</a>
 		                    </div>
 		                </div>
-		            <?php } ?>	                
+		            <?php } ?>	
+		            </a>                
 		            </div>
 		            <button class="btn btnMain leftLst"><</button>
 		            <button class="btn btnMain rightLst">></button>
@@ -131,7 +157,7 @@
 		            <div class="MultiCarousel-inner">
 		            	<?php
 		            	foreach ($saleitems as $saleitem) {
-		            	 	$sale_id = $saleitem['ID'];
+		            	 	$sale_id = $saleitem['id'];
 		            	 	$sale_name = $saleitem['item_name'];
 
 		            	 	$sale_price = $saleitem['price'];
@@ -142,9 +168,12 @@
 		            	 	$sale_codeno = $saleitem['codeno'];
 		            	 
 		            	?>
+		            	     <a href="detail1.php?id=<?= $sale_id ?>" style="color:black; text-decoration:none;" >
+		                    	<input type="hidden" name="sale_id" value="<?= $sale_id ?>">
+      
 		                <div class="item">
 		                    <div class="pad15">
-		                    	<img src="image/item/saisai_one.jpg" class="img-fluid">
+		                    	<img src="<?= $sale_photo ?>" class="img-fluid" width="200" height="70">
 		                        <p class="text-truncate"><?= $sale_name ?></p>
 		                        <p class="item-price">
 		                        	<?php
@@ -161,7 +190,7 @@
 		                        	<span class="d-block"><?= $sale_price ?>Ks</span>	
 		                        	<?php } ?>
 		                        </p>
-
+		                        </a>
 		                        <div class="star-rating">
 									<ul class="list-inline">
 										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
@@ -172,7 +201,9 @@
 									</ul>
 								</div>
 
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
+								<a href="cart1.php">
+								<button  class="addtocart btn btn-outline-danger" data-id="<?= $sale_id ?>" data-name="<?= $sale_name ?>" data-price="<?= $sale_price ?>" data-discount="<?= $sale_discount ?>" data-photo="<?= $sale_photo ?>" data-code="<?= $sale_codeno ?>">Add to Cart</button>
+								</a>
 
 		                    </div>
 		                </div>
@@ -195,15 +226,41 @@
 			<div class="col-12">
 				<div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
 		            <div class="MultiCarousel-inner">
+		            	<?php
+		            	foreach ($randomitems as $randomitem) {
+		            	 	$ri_id = $randomitem['id'];
+		            	 	$ri_name = $randomitem['item_name'];
+
+		            	 	$ri_price = $randomitem['price'];
+		            	 	$ri_discount = $randomitem['discount'];
+
+		            	 	$ri_photo = $randomitem['photo'];
+
+		            	 	$ri_codeno = $randomitem['codeno'];
+		            	 
+		            	?>
+		            	<a href="detail2.php?id=<?= $ri_id ?>" style="color:black; text-decoration:none;" >
+		                    	<input type="hidden" name="sale_id" value="<?= $ri_id ?>">
 		                <div class="item">
 		                    <div class="pad15">
-		                    	<img src="image/item/saisai_one.jpg" class="img-fluid">
-		                        <p class="text-truncate">Multi Item Carousel</p>
+		                    	<img src="<?= $ri_photo ?>" class="img-fluid" width="200" height="70">
+		                        <p class="text-truncate"><?= $ri_name ?></p>
 		                        <p class="item-price">
-		                        	<strike>250,000 Ks </strike> 
-		                        	<span class="d-block">230,000 Ks</span>
-		                        </p>
+		                        	<?php
+		                        	if ($ri_discount) {
+		                        		
+		                        	
+		                        	?>
+		                        	<strike><?= $ri_price ?>Ks</strike> 
+		                        	<span class="d-block"> <?= $ri_discount ?>Ks</span>
 
+		                        	<?php }
+		                        	else{ 
+		                        		?>
+		                        	<span class="d-block"><?= $ri_price ?>Ks</span>	
+		                        	<?php } ?>
+		                        </p>
+		                         </a>
 		                        <div class="star-rating">
 									<ul class="list-inline">
 										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
@@ -214,258 +271,12 @@
 									</ul>
 								</div>
 
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
-
-		                    </div>
+								<a href="cart1.php">
+								<button  class="addtocart btn btn-outline-danger" data-id="<?= $ri_id ?>" data-name="<?= $ri_name ?>" data-price="<?= $ri_price ?>" data-discount="<?= $ri_discount ?>" data-photo="<?= $ri_photo ?>" data-code="<?= $ri_codeno ?>">Add to Cart</button>
+								</a>
+							</div>
 		                </div>
-		                <div class="item">
-		                    <div class="pad15">
-		                    	<img src="image/item/saisai_two.jpg" class="img-fluid">
-		                        <p class="text-truncate">Multi Item Carousel</p>
-		                        <p class="item-price">
-		                        	<span class="d-block">230,000 Ks </span>
-		                        </p>
-
-		                        <div class="star-rating">
-									<ul class="list-inline">
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star-half' ></i></li>
-									</ul>
-								</div>
-
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
-
-		                    </div>
-		                </div>
-		                <div class="item">
-		                    <div class="pad15">
-		                    	<img src="image/item/saisai_three.jpg" class="img-fluid">
-		                        <p class="text-truncate">Multi Item Carousel</p>
-		                        <p class="item-price">
-		                        	<strike>250,000 Ks </strike> 
-		                        	<span class="d-block">230,000 Ks </span>
-		                        </p>
-
-		                        <div class="star-rating">
-									<ul class="list-inline">
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star-half' ></i></li>
-									</ul>
-								</div>
-
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
-
-		                    </div>
-		                </div>
-		                <div class="item">
-		                    <div class="pad15">
-		                    	<img src="image/item/saisai_four.jpg" class="img-fluid">
-		                        <p class="text-truncate">Multi Item Carousel</p>
-		                        <p class="item-price">
-		                        	<strike>250,000 Ks </strike> 
-		                        	<span class="d-block">230,000 Ks </span>
-		                        </p>
-
-		                        <div class="star-rating">
-									<ul class="list-inline">
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star-half' ></i></li>
-									</ul>
-								</div>
-
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
-
-		                    </div>
-		                </div>
-		                <div class="item">
-		                    <div class="pad15">
-		                    	<img src="image/item/giordano_one.jpg" class="img-fluid">
-		                        <p class="text-truncate">Multi Item Carousel</p>
-		                        <p class="item-price">
-		                        	<strike>250,000 Ks </strike> 
-		                        	<span class="d-block">230,000 Ks </span>
-		                        </p>
-
-		                        <div class="star-rating">
-									<ul class="list-inline">
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star-half' ></i></li>
-									</ul>
-								</div>
-
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
-
-		                    </div>
-		                </div>
-		                <div class="item">
-		                    <div class="pad15">
-		                    	<img src="image/item/giordano_two.jpg" class="img-fluid">
-		                        <p class="text-truncate">Multi Item Carousel</p>
-		                        <p class="item-price">
-		                        	<span class="d-block">230,000 Ks </span>
-		                        </p>
-
-		                        <div class="star-rating">
-									<ul class="list-inline">
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star-half' ></i></li>
-									</ul>
-								</div>
-
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
-
-		                    </div>
-		                </div>
-		                <div class="item">
-		                    <div class="pad15">
-		                    	<img src="image/item/giordano_three.jpg" class="img-fluid">
-		                        <p class="text-truncate">Multi Item Carousel</p>
-		                        <p class="item-price">
-		                        	<span class="d-block">230,000 Ks </span>
-		                        </p>
-
-		                        <div class="star-rating">
-									<ul class="list-inline">
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star-half' ></i></li>
-									</ul>
-								</div>
-
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
-
-		                    </div>
-		                </div>
-		                <div class="item">
-		                    <div class="pad15">
-		                    	<img src="image/item/giordano_four.jpg" class="img-fluid">
-		                        <p class="text-truncate">Multi Item Carousel</p>
-		                        <p class="item-price">
-		                        	<strike>250,000 Ks </strike> 
-		                        	<span class="d-block">230,000 Ks </span>
-		                        </p>
-
-		                        <div class="star-rating">
-									<ul class="list-inline">
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star-half' ></i></li>
-									</ul>
-								</div>
-
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
-
-		                    </div>
-		                </div>
-		                <div class="item">
-		                    <div class="pad15">
-		                    	<img src="image/item/apple_four.jpeg" class="img-fluid">
-		                        <p class="text-truncate">Multi Item Carousel</p>
-		                        <p class="item-price">
-		                        	<span class="d-block">230,000 Ks </span>
-		                        </p>
-
-		                        <div class="star-rating">
-									<ul class="list-inline">
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star-half' ></i></li>
-									</ul>
-								</div>
-
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
-
-		                    </div>
-		                </div>
-		                <div class="item">
-		                    <div class="pad15">
-		                    	<img src="image/item/apple_one.jpg" class="img-fluid">
-		                        <p class="text-truncate">Multi Item Carousel</p>
-		                        <p class="item-price">
-		                        	<strike>250,000 Ks </strike> 
-		                        	<span class="d-block">230,000 Ks</span>
-		                        </p>
-
-		                        <div class="star-rating">
-									<ul class="list-inline">
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star-half' ></i></li>
-									</ul>
-								</div>
-
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
-
-		                    </div>
-		                </div>
-		                <div class="item">
-		                    <div class="pad15">
-		                    	<img src="image/item/apple_three.jpg" class="img-fluid">
-		                        <p class="text-truncate">Multi Item Carousel</p>
-		                        <p class="item-price">
-		                        	<span class="d-block">230,000 Ks </span>
-		                        </p>
-
-		                        <div class="star-rating">
-									<ul class="list-inline">
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star-half' ></i></li>
-									</ul>
-								</div>
-
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
-
-		                    </div>
-		                </div>
-		                <div class="item">
-		                    <div class="pad15">
-		                    	<img src="image/item/apple_two.png" class="img-fluid">
-		                        <p class="text-truncate">Multi Item Carousel</p>
-		                        <p class="item-price">
-		                        	<strike>250,000 Ks </strike> 
-		                        	<span class="d-block">230,000 Ks </span>
-		                        </p>
-
-		                        <div class="star-rating">
-									<ul class="list-inline">
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star' ></i></li>
-										<li class="list-inline-item"><i class='bx bxs-star-half' ></i></li>
-									</ul>
-								</div>
-
-								<a href="#" class="addtocartBtn text-decoration-none">Add to Cart</a>
-
-		                    </div>
-		                </div>
+		                    <?php } ?>
 		                
 		            </div>
 		            <button class="btn btnMain leftLst"><</button>
@@ -484,59 +295,20 @@
 
 	    <!-- Brand Store Item -->
 	    <section class="customer-logos slider mt-5">
+	    	<?php
+			    foreach ($brands as $brand) {
+			    $bphoto = $brand['photo'];
+			        		
+			?>
 	      	<div class="slide">
+	      		
 	      		<a href="">
-		      		<img src="image/brand/loacker_logo.jpg">
+		      		<img src="<?= $bphoto ?>" class="img-fluid" width="200" height="70">
 		      	</a>
+
 	      	</div>
+	      	<?php } ?>
 	      	
-	      	<div class="slide">
-	      		<a href="">
-	      			<img src="image/brand/lockandlock_logo.png">
-	      		</a>
-	      	</div>
-	      	
-	      	<div class="slide">
-	      		<a href="">
-	      			<img src="image/brand/apple_logo.png">
-	      		</a>
-	      	</div>
-	      	
-	      	<div class="slide">
-	      		<a href="">
-	      			<img src="image/brand/giordano_logo.png">
-	      		</a>
-	      	</div>
-	      	
-	      	<div class="slide">
-	      		<a href="">
-	      			<img src="image/brand/saisai_logo.png">
-	      		</a>
-	      	</div>
-	      	
-	      	<div class="slide">
-	      		<a href="">
-	      			<img src="image/brand/brands_logo.png">
-	      		</a>	
-	      	</div>
-	      	
-	      	<div class="slide">
-	      		<a href="">
-	      			<img src="image/brand/acer_logo.png">
-	      		</a>
-	      	</div>
-	      	
-	      	<div class="slide">
-	      		<a href="">
-	      			<img src="image/brand/bella_logo.png">
-	      		</a>
-	      	</div>
-	      	
-	      	<div class="slide">
-	      		<a href="">
-	      			<img src="image/brand/ariel_logo.png">
-	      		</a>
-	      	</div>
 	   	</section>
 
 	    <div class="whitespace d-xl-block d-lg-block d-md-none d-sm-none d-none"></div>

@@ -9,6 +9,6 @@
 	$statement->bindParam(':ID',$ID);
 	$statement->execute();
 
-	header('location:item.php')
+	header('location:cart.php')
 
 ?>

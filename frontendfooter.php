@@ -97,7 +97,7 @@
 				</a>
 			</div>
 
-      		<p class="m-0 text-center text-white">Copyright &copy; <img src="../logo/logo_wh_transparent.png" style="width: 30px; height: 30px"> 2019</p>
+      		<p class="m-0 text-center text-white">Copyright &copy; <img src="logo/logo_wh_transparent.png" style="width: 30px; height: 30px"> 2019</p>
     	</div>
   	</footer>
 
@@ -113,6 +113,55 @@
     <script type="text/javascript" src="frontend/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.js"></script>
     <script type="text/javascript" src="frontend/js/custom.js"></script>
+
+
+    <script type="text/javascript">
+		$(document).ready(function(){
+			
+			$('.addtocart').click(function(){
+				var id=$(this).data('id');
+				var name=$(this).data('name');
+				var price=$(this).data('price');
+				var discount=$(this).data('discount');
+				var photo=$(this).data('photo');
+				var code=$(this).data('code');
+
+				var item={
+					id:id,
+					name:name,
+					price:price,
+					discount:discount,
+					photo:photo,
+					code:code,
+					qty:1,
+				}
+
+				var shop_str=localStorage.getItem('onlineshop');
+				var shop_arr;
+				if (shop_str==null){
+					shop_arr=Array();
+				}else{
+					shop_arr=JSON.parse(shop_str);
+				}
+
+				var status=false;
+				$.each(shop_arr,function(i,v){
+					if (id==v.id){
+						v.qty++;
+						status=true;
+					}
+				})
+				if (status==false){
+					shop_arr.push(item);
+				}
+				
+				var shopData=JSON.stringify(shop_arr);
+				localStorage.setItem("onlineshop", shopData);
+				count();
+			})
+		})
+	</script>
+
 
     <!-- Owl Carousel -->
     <script type="text/javascript" src="frontend/js/owl.carousel.js"></script>

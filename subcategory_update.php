@@ -1,4 +1,5 @@
 <?php
+	
 	$ID=$_POST['ID'];
 	$Name=$_POST['name'];
 	$category_id=$_POST['category_id'];
@@ -20,8 +21,7 @@
 		':category_id'=>$category_id,
 
 	]);
-	var_dump($result);
-	die();
+	
 	}catch(Exception $e){
 		throw $e;
 	}

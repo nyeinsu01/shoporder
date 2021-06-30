@@ -1,11 +1,10 @@
 <?php
     require 'backendheader.php';
     require 'connection.php';
-    $query="SELECT i.ID,i.item_name,i.codeno,i.photo,i.price,i.discount,i.description,b.Name from items i JOIN brands b ON b.ID=i.brand_id";
-    $sql="SELECT i.ID,i.item_name,i.codeno,i.photo,i.price,i.discount,i.description,s.Subcategory_name from items i JOIN subcategories s ON s.ID=i.subcategory_id";
-    $result=$pdo->query($query,$sql);
-    $brands=$result->fetchAll(PDO::FETCH_ASSOC);
-    
+    $query="SELECT i.id,i.codeno,i.item_name,i.photo,i.price,i.discount,i.description,b.Name,s.ID from items i JOIN subcategories s ON s.ID=i.subcategory_id JOIN brands b ON b.ID=i.brand_id ";
+    $result=$pdo->query($query);
+    $items=$result->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
             <div class="app-title">
@@ -38,10 +37,13 @@
                                         <?php
                                          $i=1;
                                         foreach ($items as $item) {
-                                        $ID = $item['ID'];
+                                        $id = $item['id'];
+                                        $codeno = $item['codeno'];
+                                        $photo = $item['photo'];
                                         $item_name = $item['item_name'];
                                         $brand = $item['Name'];
-                                        $subcategory = $item['Subcategory_name'];
+                                        $discount = $item['discount'];
+                                        $price = $item['price'];
                                         
                                         
                                         ?>
@@ -52,22 +54,64 @@
                                                     <?php if ($photo) {
                                                      ?>
                                                     <div class="mr-3">
-                                                        <img src="<?= $photo; ?>" alt="user" class="rounded-circle" width="45" height="55" />
+                                                        <img src="<?= $photo; ?>" alt="user" class="rounded-circle" width="65" height="70" />
                                                     </div>
                                                 <?php } ?>
                                                 <div class="">
                                                 <h5 class="text-dark mb-0 font-16 font-weight-medium">
-                                                 <?=  $Name; ?></h5> </div></div>
+                                                 <?=  $codeno; ?>
+                                                     
+                                                 </h5>
+                                                 <span class="text-muted"><?= $item_name ?></span>
+                                                </div>
+                                                </div>
+
+                                            </td>
+                                            <td>
+                                            
+                                               <div class="d-flex no-block align-items-center">
+                                                <div class="">
+                                                <h5 class="text-dark mb-0 font-16 font-weight-medium">
+                                                 <?=  $brand; ?></h5> </div></div>
+
+                                            </td>
+
+                                            <td>
+                                            
+                                                <div class="d-flex no-block align-items-center">
+                                                <div class="">
+                                                <h5 class="text-dark mb-0 font-16 font-weight-medium">
+                                                <p class="item-price">
+                                                <?php
+                                                if ($discount) {
+                                        
+                                    
+                                                ?>
+                                                <strike><?= $price ?>Ks</strike> 
+                                                <span class="d-block"> <?= $discount ?>Ks</span>
+
+                                                <?php }
+                                                else{ 
+                                                ?>
+                                                <span class="d-block"><?= $price ?>Ks</span>   
+                                                <?php } ?>
+                                                </p>
+                                                </h5> </div>
+                                                </div>
+
                                             </td>
                                             
                                             <td>
-                                                <a href="" class="btn btn-warning">
+                                                <a href="item_edit.php?id=<?= $id ?>" class="btn btn-warning">
                                                     <i class="icofont-ui-settings"></i>
                                                 </a>
 
-                                                <a href="" class="btn btn-outline-danger">
-                                                    <i class="icofont-close"></i>
-                                                </a>
+                                                <form class="d-inline-block" onsubmit="return confirm('Are you sure want to delete!')" action="item_delete.php" method="POST">
+                                                    <input type="hidden" name="id" value="<?= $id ?>">
+                                                <button class="btn btn-outline-danger">
+                                                        <i class="icofont-close"></i>
+                                                </button>
+                                            </form>
                                             </td>
 
                                         </tr>
